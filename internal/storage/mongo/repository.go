@@ -114,3 +114,15 @@ func (r repository) DeleteAll(ctx context.Context) (error, int64) {
 
 	return nil, res.DeletedCount
 }
+
+func (r repository) CreateGroup(ctx context.Context, g *models.EmployeeGroup) error {
+
+	coll := r.db.Collection("groups")
+
+	_, err := coll.InsertOne(ctx, g)
+	if err != nil {
+		return fmt.Errorf("failed to exectute insert query, error: %v", err)
+	}
+
+	return nil
+}

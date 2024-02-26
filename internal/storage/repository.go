@@ -12,4 +12,6 @@ type Storage interface {
 	Delete(ctx context.Context, id int) error
 	DeleteAll(ctx context.Context) (error, int64)
 	Update(ctx context.Context, id int, e models.Employee) error
+
+	CreateGroup(ctx context.Context, g *models.EmployeeGroup) error
 }

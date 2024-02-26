@@ -21,6 +21,8 @@ func main() {
 	a.PUT("/employee/{id}", s.UpdateEmployee)
 	a.DELETE("/employee/", s.DeleteAllEmployee)
 
+	a.POST("/group/", s.NewGroup)
+
 	err := a.Run()
 	if err != nil {
 		panic(err)

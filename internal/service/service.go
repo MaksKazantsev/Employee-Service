@@ -116,3 +116,20 @@ func (s *Service) DeleteAllEmployee(ctx *fuze.Ctx) {
 		_ = fmt.Errorf("failed to send: %v", err)
 	}
 }
+
+func (s *Service) NewGroup(ctx *fuze.Ctx) {
+	w := ctx.Response
+	var group models.EmployeeGroup
+	w.Header().Set("Content-Type", "application/json")
+	if err := ctx.Decode(&group); err != nil {
+		_ = fmt.Errorf("failed to decode: %v", err)
+	}
+	group.ID = rand.Intn(100)
+	group.EmployeeNumber = len(group.EmployeeList)
+	s.storage.CreateGroup(context.Background(), &group)
+
+	err := ctx.SendValue(&group, 200)
+	if err != nil {
+		_ = fmt.Errorf("failed to send: %v", err)
+	}
+}
