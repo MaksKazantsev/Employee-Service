@@ -14,4 +14,8 @@ type Storage interface {
 	Update(ctx context.Context, id int, e models.Employee) error
 
 	CreateGroup(ctx context.Context, g *models.EmployeeGroup) error
+	GetGroup(ctx context.Context, id int) (*models.EmployeeGroup, error)
+	DeleteGroup(ctx context.Context, id int) error
+	AddEmployeeToGroup(ctx context.Context, e models.Employee, g *models.EmployeeGroup) error
+	DeleteEmployeeFromGroup(ctx context.Context, e models.Employee, g *models.EmployeeGroup) error
 }

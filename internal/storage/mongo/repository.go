@@ -118,11 +118,70 @@ func (r repository) DeleteAll(ctx context.Context) (error, int64) {
 func (r repository) CreateGroup(ctx context.Context, g *models.EmployeeGroup) error {
 
 	coll := r.db.Collection("groups")
-
 	_, err := coll.InsertOne(ctx, g)
 	if err != nil {
 		return fmt.Errorf("failed to exectute insert query, error: %v", err)
 	}
 
+	return nil
+}
+
+func (r repository) DeleteGroup(ctx context.Context, id int) error {
+	coll := r.db.Collection("groups")
+	filter := bson.M{
+		"_id": id,
+	}
+	_, err := coll.DeleteOne(ctx, filter)
+	if err != nil {
+		return fmt.Errorf("failed to execute delete query, error: %v", err)
+	}
+	return nil
+}
+
+func (r repository) GetGroup(ctx context.Context, id int) (*models.EmployeeGroup, error) {
+	var group models.EmployeeGroup
+	coll := r.db.Collection("groups")
+	filter := bson.M{
+		"_id": id,
+	}
+	err := coll.FindOne(ctx, filter).Decode(&group)
+	if err != nil {
+		if errors.Is(mongo.ErrNoDocuments, err) {
+			return &group, fmt.Errorf("no documents!, error: %v", err)
+		}
+		return &group, fmt.Errorf("failed to exectute get query, error: %v", err)
+	}
+	return &group, nil
+}
+
+func (r repository) AddEmployeeToGroup(ctx context.Context, e models.Employee, g *models.EmployeeGroup) error {
+	coll := r.db.Collection("groups")
+	filter := bson.D{
+		{Key: "_id", Value: g.ID},
+	}
+	_, err := coll.UpdateOne(ctx, filter, bson.D{
+		{"$push", bson.D{{"employee_list", e}}},
+		{"$set", bson.D{{"employee_number", len(g.EmployeeList) + 1}}},
+	})
+
+	if err != nil {
+		return fmt.Errorf("failed to execute delete query, error: %v", err)
+	}
+	return nil
+}
+
+func (r repository) DeleteEmployeeFromGroup(ctx context.Context, e models.Employee, g *models.EmployeeGroup) error {
+	coll := r.db.Collection("groups")
+	filter := bson.D{
+		{Key: "_id", Value: g.ID},
+	}
+	update := bson.D{
+		{"$pull", bson.D{{"employee_list", e}}},
+		{"$set", bson.D{{"employee_number", len(g.EmployeeList) - 1}}},
+	}
+	_, err := coll.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return fmt.Errorf("failed to execute delete query, error: %v", err)
+	}
 	return nil
 }

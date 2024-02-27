@@ -22,6 +22,10 @@ func main() {
 	a.DELETE("/employee/", s.DeleteAllEmployee)
 
 	a.POST("/group/", s.NewGroup)
+	a.DELETE("/group/{id}", s.DeleteGroup)
+	a.PUT("/group/{id}/{employeeId}", s.AddEmployeeToGroup)
+	a.DELETE("/group/{id}/{employeeId}", s.DeleteEmployeeFromGroup)
+	a.GET("/group/{id}", s.GetGroup)
 
 	err := a.Run()
 	if err != nil {

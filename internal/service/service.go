@@ -125,11 +125,81 @@ func (s *Service) NewGroup(ctx *fuze.Ctx) {
 		_ = fmt.Errorf("failed to decode: %v", err)
 	}
 	group.ID = rand.Intn(100)
-	group.EmployeeNumber = len(group.EmployeeList)
+	group.EmployeeList = make([]models.Employee, 0)
 	s.storage.CreateGroup(context.Background(), &group)
 
 	err := ctx.SendValue(&group, 200)
 	if err != nil {
 		_ = fmt.Errorf("failed to send: %v", err)
 	}
+}
+
+func (s *Service) DeleteGroup(ctx *fuze.Ctx) {
+	w := ctx.Response
+	w.Header().Set("Content-Type", "application/json")
+	params := ctx.Parameters["id"]
+	id, err := strconv.Atoi(params)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusBadRequest)
+		return
+	}
+	s.storage.DeleteGroup(context.Background(), id)
+	_, _ = w.Write([]byte("A group of employee was successfully deleted from the storage"))
+}
+
+func (s *Service) GetGroup(ctx *fuze.Ctx) {
+	w := ctx.Response
+	w.Header().Set("Content-Type", "application/json")
+	params := ctx.Parameters["id"]
+	id, err := strconv.Atoi(params)
+	group, err := s.storage.GetGroup(context.Background(), id)
+	if err != nil {
+		http.Error(w, "No groups founded!", http.StatusNotFound)
+		return
+	}
+	err = ctx.SendValue(&group, 200)
+	if err != nil {
+		_ = fmt.Errorf("failed to send: %v", err)
+	}
+}
+
+func (s *Service) AddEmployeeToGroup(ctx *fuze.Ctx) {
+	w := ctx.Response
+	w.Header().Set("Content-Type", "application/json")
+	params := ctx.Parameters["id"]
+	params2 := ctx.Parameters["employeeId"]
+
+	id, err := strconv.Atoi(params)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusBadRequest)
+		return
+	}
+	userID, err := strconv.Atoi(params2)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusBadRequest)
+		return
+	}
+	e, _ := s.storage.Get(context.Background(), userID)
+	group, _ := s.storage.GetGroup(context.Background(), id)
+	s.storage.AddEmployeeToGroup(context.Background(), e, group)
+}
+
+func (s *Service) DeleteEmployeeFromGroup(ctx *fuze.Ctx) {
+	w := ctx.Response
+	w.Header().Set("Content-Type", "application/json")
+	params := ctx.Parameters["id"]
+	params2 := ctx.Parameters["employeeId"]
+	id, err := strconv.Atoi(params)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusBadRequest)
+		return
+	}
+	userID, err := strconv.Atoi(params2)
+	if err != nil {
+		http.Error(w, "Failed to convert", http.StatusBadRequest)
+		return
+	}
+	e, _ := s.storage.Get(context.Background(), userID)
+	group, _ := s.storage.GetGroup(context.Background(), id)
+	s.storage.DeleteEmployeeFromGroup(context.Background(), e, group)
 }
