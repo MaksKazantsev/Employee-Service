@@ -202,4 +202,6 @@ func (s *Service) DeleteEmployeeFromGroup(ctx *fuze.Ctx) {
 	e, _ := s.storage.Get(context.Background(), userID)
 	group, _ := s.storage.GetGroup(context.Background(), id)
 	s.storage.DeleteEmployeeFromGroup(context.Background(), e, group)
+	w.Write([]byte("Successfuly delete from the group employee:"))
+	err = ctx.SendValue(&e, 200)
 }
