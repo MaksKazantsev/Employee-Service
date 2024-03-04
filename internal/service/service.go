@@ -31,9 +31,12 @@ func (s *Service) CreateEmployee(ctx *fuze.Ctx) {
 		_ = fmt.Errorf("failed to decode: %v", err)
 	}
 	employee.ID = rand.Intn(100)
-	s.storage.Add(context.Background(), &employee)
+	err := s.storage.Add(context.Background(), &employee)
+	if err != nil {
+		_ = fmt.Errorf("failed to add: %v", err)
+	}
 
-	err := ctx.SendValue(&employee, 200)
+	err = ctx.SendValue(&employee, 200)
 	if err != nil {
 		_ = fmt.Errorf("failed to send: %v", err)
 	}
