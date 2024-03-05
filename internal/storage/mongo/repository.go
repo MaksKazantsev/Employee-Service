@@ -2,8 +2,6 @@ package mongo
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"github.com/MaksKazantsev/mongodb/internal/models"
 	"github.com/MaksKazantsev/mongodb/internal/storage"
 	"go.mongodb.org/mongo-driver/bson"
@@ -28,10 +26,7 @@ func (r repository) Get(ctx context.Context, id int) (models.Employee, error) {
 	}
 	err := coll.FindOne(ctx, filter).Decode(&employee)
 	if err != nil {
-		if errors.Is(mongo.ErrNoDocuments, err) {
-			return employee, fmt.Errorf("no documents!, error: %v", err)
-		}
-		return employee, fmt.Errorf("failed to exectute get query, error: %v", err)
+		return employee, err
 	}
 	return employee, nil
 }
@@ -41,9 +36,8 @@ func (r repository) Add(ctx context.Context, e *models.Employee) error {
 
 	_, err := coll.InsertOne(ctx, e)
 	if err != nil {
-		return fmt.Errorf("failed to exectute insert query, error: %v", err)
+		return err
 	}
-
 	return nil
 }
 
@@ -56,7 +50,7 @@ func (r repository) Delete(ctx context.Context, id int) error {
 
 	_, err := coll.DeleteOne(ctx, filter)
 	if err != nil {
-		return fmt.Errorf("failed to exectute delete query, error: %v", err)
+		return err
 	}
 
 	return nil
@@ -76,7 +70,7 @@ func (r repository) Update(ctx context.Context, id int, e models.Employee) error
 
 	_, err := coll.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return fmt.Errorf("failed to exectute update query, error: %v", err)
+		return err
 	}
 	return nil
 }
@@ -90,14 +84,13 @@ func (r repository) GetAll(ctx context.Context) ([]models.Employee, error) {
 
 	cur, err := coll.Find(ctx, filter)
 	if err != nil {
-		return nil, fmt.Errorf("failed to exectute get query, error: %v", err)
+		return nil, err
 	}
 
 	err = cur.All(ctx, &employees)
 	if err != nil {
-		return nil, fmt.Errorf("failed to decode, error: %v", err)
+		return nil, err
 	}
-
 	return employees, nil
 }
 
@@ -109,7 +102,7 @@ func (r repository) DeleteAll(ctx context.Context) (error, int64) {
 
 	res, err := coll.DeleteMany(ctx, filter)
 	if err != nil {
-		return fmt.Errorf("failed to exectute delete query, error: %v", err), 0
+		return err, 0
 	}
 
 	return nil, res.DeletedCount
@@ -120,7 +113,7 @@ func (r repository) CreateGroup(ctx context.Context, g *models.EmployeeGroup) er
 	coll := r.db.Collection("groups")
 	_, err := coll.InsertOne(ctx, g)
 	if err != nil {
-		return fmt.Errorf("failed to exectute insert query, error: %v", err)
+		return err
 	}
 
 	return nil
@@ -133,7 +126,7 @@ func (r repository) DeleteGroup(ctx context.Context, id int) error {
 	}
 	_, err := coll.DeleteOne(ctx, filter)
 	if err != nil {
-		return fmt.Errorf("failed to execute delete query, error: %v", err)
+		return err
 	}
 	return nil
 }
@@ -146,10 +139,7 @@ func (r repository) GetGroup(ctx context.Context, id int) (*models.EmployeeGroup
 	}
 	err := coll.FindOne(ctx, filter).Decode(&group)
 	if err != nil {
-		if errors.Is(mongo.ErrNoDocuments, err) {
-			return &group, fmt.Errorf("no documents!, error: %v", err)
-		}
-		return &group, fmt.Errorf("failed to exectute get query, error: %v", err)
+		return &group, err
 	}
 	return &group, nil
 }
@@ -165,7 +155,7 @@ func (r repository) AddEmployeeToGroup(ctx context.Context, e models.Employee, g
 	})
 
 	if err != nil {
-		return fmt.Errorf("failed to execute delete query, error: %v", err)
+		return err
 	}
 	return nil
 }
@@ -181,7 +171,7 @@ func (r repository) DeleteEmployeeFromGroup(ctx context.Context, e models.Employ
 	}
 	_, err := coll.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return fmt.Errorf("failed to execute delete query, error: %v", err)
+		return err
 	}
 	return nil
 }
