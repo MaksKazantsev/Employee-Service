@@ -2,6 +2,7 @@ package log
 
 import (
 	"log/slog"
+	"os"
 )
 
 var log *slog.Logger
@@ -15,5 +16,8 @@ func GetLogger() Logger {
 }
 
 func MustSetup() *slog.Logger {
-	panic("make me")
+	l := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+	return l
 }
