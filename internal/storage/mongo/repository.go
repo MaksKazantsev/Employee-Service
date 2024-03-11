@@ -56,7 +56,7 @@ func (r repository) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-func (r repository) Update(ctx context.Context, id int, e models.Employee) error {
+func (r repository) Update(ctx context.Context, id int, e models.UpdateEmployee) error {
 
 	coll := r.db.Collection("employee")
 

@@ -6,6 +6,8 @@ import (
 )
 
 func SetupRoutes(a *fuze.App, s *service.Service) {
+
+	// Employee
 	a.GET("/employee/", s.GetAllEmployee)
 	a.POST("/employee/{id}", s.CreateEmployee)
 	a.GET("/employee/{id}", s.GetEmployee)
@@ -13,6 +15,7 @@ func SetupRoutes(a *fuze.App, s *service.Service) {
 	a.PUT("/employee/{id}", s.UpdateEmployee)
 	a.DELETE("/employee/", s.DeleteAllEmployee)
 
+	// Group
 	a.POST("/group/", s.NewGroup)
 	a.DELETE("/group/{id}", s.DeleteGroup)
 	a.PUT("/group/{id}/{employeeId}", s.AddEmployeeToGroup)

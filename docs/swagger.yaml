@@ -1,0 +1,341 @@
+definitions:
+  models.Employee:
+    properties:
+      age:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      salary:
+        type: number
+      sex:
+        type: string
+    type: object
+  models.EmployeeGroup:
+    properties:
+      employeeList:
+        items:
+          $ref: '#/definitions/models.Employee'
+        type: array
+      employeeNumber:
+        type: integer
+      groupTitle:
+        type: string
+      id:
+        type: integer
+    type: object
+  models.UpdateEmployee:
+    properties:
+      age:
+        type: integer
+      name:
+        type: string
+      salary:
+        type: number
+      sex:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: This is a simple employee service
+  title: Employee API
+  version: "1.6"
+paths:
+  /employee/:
+    delete:
+      description: Deletes all employees
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete all employees
+      tags:
+      - Employee
+    get:
+      description: Gets all employees
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all employees
+      tags:
+      - Employee
+    post:
+      description: Creates new Employee
+      parameters:
+      - description: employee model
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Employee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create Employee
+      tags:
+      - Employee
+  /employee/{id}:
+    delete:
+      description: Deletes employee
+      parameters:
+      - description: employee id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete employee
+      tags:
+      - Employee
+    get:
+      description: Gets employee
+      parameters:
+      - description: employee id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get employee
+      tags:
+      - Employee
+    put:
+      description: Updates employee
+      parameters:
+      - description: employee id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: employee update
+        in: body
+        name: input
+        schema:
+          $ref: '#/definitions/models.UpdateEmployee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update employee
+      tags:
+      - Employee
+  /group/:
+    post:
+      description: Creates new group
+      parameters:
+      - description: employee group
+        in: body
+        name: input
+        schema:
+          $ref: '#/definitions/models.EmployeeGroup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create new group
+      tags:
+      - Group
+  /group/{id}:
+    delete:
+      description: Deletes group
+      parameters:
+      - description: group id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete group
+      tags:
+      - Group
+    get:
+      description: Gets group
+      parameters:
+      - description: group id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get group
+      tags:
+      - Group
+  /group/{id}/{employeeId}:
+    post:
+      description: Adds new employee to group
+      parameters:
+      - description: group id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: employee id
+        in: path
+        name: employeeId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Add new employee to group
+      tags:
+      - Group
+    put:
+      description: Deletes employee to group
+      parameters:
+      - description: group id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: employee id
+        in: path
+        name: employeeId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete employee to group
+      tags:
+      - Group
+swagger: "2.0"

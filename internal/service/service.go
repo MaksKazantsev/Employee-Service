@@ -20,6 +20,18 @@ func NewService(s storage.Storage) *Service {
 	}
 }
 
+// CreateEmployee godoc
+//
+//	@Summary		Create Employee
+//	@Description	Creates new Employee
+//	@Tags			Employee
+//	@Produce		json
+//	@Param			input	body		models.Employee	true	"employee model"
+//	@Success		200		{integer}	integer			1
+//
+//	@Failure		400		{object}	string
+//	@Failure		500		{object}	string
+//	@Router			/employee/ [post]
 func (s *Service) CreateEmployee(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
@@ -34,12 +46,24 @@ func (s *Service) CreateEmployee(ctx *fuze.Ctx) {
 		_ = fmt.Errorf("repository create error: %w", err)
 	}
 
-	if err := ctx.SendValue(&employee, 200); err != nil {
+	if err := ctx.SendValue(&employee, 201); err != nil {
 		_ = fmt.Errorf("failed to send value: %w", err)
 	}
 
 }
 
+// GetEmployee godoc
+//
+//	@Summary		Get employee
+//	@Description	Gets employee
+//	@Tags			Employee
+//	@Produce		json
+//	@Param			id	path		int		true	"employee id"
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/employee/{id} [get]
 func (s *Service) GetEmployee(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
@@ -62,6 +86,18 @@ func (s *Service) GetEmployee(ctx *fuze.Ctx) {
 	}
 }
 
+// DeleteEmployee godoc
+//
+//	@Summary		Delete employee
+//	@Description	Deletes employee
+//	@Tags			Employee
+//	@Produce		json
+//	@Param			id	path		int		true	"employee id"
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/employee/{id} [delete]
 func (s *Service) DeleteEmployee(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
@@ -80,11 +116,24 @@ func (s *Service) DeleteEmployee(ctx *fuze.Ctx) {
 	_, _ = w.Write([]byte("Employee was successfully deleted from the storage"))
 }
 
+// UpdateEmployee godoc
+//
+//	@Summary		Update employee
+//	@Description	Updates employee
+//	@Tags			Employee
+//	@Produce		json
+//	@Param			id	path		int		true	"employee id"
+//	@Param			input	body		models.UpdateEmployee	false	"employee update"
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/employee/{id} [put]
 func (s *Service) UpdateEmployee(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
 
-	var employee models.Employee
+	var employee models.UpdateEmployee
 
 	if err := ctx.Decode(&employee); err != nil {
 		_ = fmt.Errorf("failed to decode value: %w", err)
@@ -96,7 +145,6 @@ func (s *Service) UpdateEmployee(ctx *fuze.Ctx) {
 		_ = fmt.Errorf("failed to convert id: %w", err)
 	}
 
-	employee.ID = id
 	err = ctx.SendValue(&employee, 200)
 	if err != nil {
 		_ = fmt.Errorf("failed to send value: %w", err)
@@ -106,6 +154,17 @@ func (s *Service) UpdateEmployee(ctx *fuze.Ctx) {
 	}
 }
 
+// GetAllEmployee godoc
+//
+//	@Summary		Get all employees
+//	@Description	Gets all employees
+//	@Tags			Employee
+//	@Produce		json
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/employee/ [get]
 func (s *Service) GetAllEmployee(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
@@ -121,6 +180,17 @@ func (s *Service) GetAllEmployee(ctx *fuze.Ctx) {
 	}
 }
 
+// DeleteAllEmployee godoc
+//
+//	@Summary		Delete all employees
+//	@Description	Deletes all employees
+//	@Tags			Employee
+//	@Produce		json
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/employee/ [delete]
 func (s *Service) DeleteAllEmployee(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
@@ -137,6 +207,18 @@ func (s *Service) DeleteAllEmployee(ctx *fuze.Ctx) {
 
 }
 
+// NewGroup godoc
+//
+//	@Summary		Create new group
+//	@Description	Creates new group
+//	@Tags			Group
+//	@Produce		json
+//	@Param			input body models.EmployeeGroup false "employee group"
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/group/ [post]
 func (s *Service) NewGroup(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
@@ -159,6 +241,18 @@ func (s *Service) NewGroup(ctx *fuze.Ctx) {
 	}
 }
 
+// DeleteGroup godoc
+//
+//	@Summary		Delete group
+//	@Description	Deletes group
+//	@Tags			Group
+//	@Produce		json
+//	@Param			id	path		int		true	"group id"
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/group/{id} [delete]
 func (s *Service) DeleteGroup(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
@@ -177,6 +271,18 @@ func (s *Service) DeleteGroup(ctx *fuze.Ctx) {
 	_, _ = w.Write([]byte("A group of employee was successfully deleted from the storage"))
 }
 
+// GetGroup godoc
+//
+//	@Summary		Get group
+//	@Description	Gets group
+//	@Tags			Group
+//	@Produce		json
+//	@Param			id	path		int		true	"group id"
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/group/{id} [get]
 func (s *Service) GetGroup(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
@@ -199,6 +305,19 @@ func (s *Service) GetGroup(ctx *fuze.Ctx) {
 	}
 }
 
+// AddEmployeeToGroup godoc
+//
+//	@Summary		Add new employee to group
+//	@Description	Adds new employee to group
+//	@Tags			Group
+//	@Produce		json
+//	@Param			id	path		int		true	"group id"
+//	@Param			employeeId	path		int		true	"employee id"
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/group/{id}/{employeeId} [post]
 func (s *Service) AddEmployeeToGroup(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
@@ -233,6 +352,19 @@ func (s *Service) AddEmployeeToGroup(ctx *fuze.Ctx) {
 	}
 }
 
+// DeleteEmployeeFromGroup godoc
+//
+//	@Summary		Delete employee to group
+//	@Description	Deletes employee to group
+//	@Tags			Group
+//	@Produce		json
+//	@Param			id	path		int		true	"group id"
+//	@Param			employeeId	path		int		true	"employee id"
+//	@Success		200	{integer}	integer	1
+//
+//	@Failure		400	{object}	string
+//	@Failure		500	{object}	string
+//	@Router			/group/{id}/{employeeId} [put]
 func (s *Service) DeleteEmployeeFromGroup(ctx *fuze.Ctx) {
 	w := ctx.Response
 	w.Header().Set("Content-Type", "application/json")
